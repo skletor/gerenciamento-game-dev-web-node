@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Contêiner do toast -->
+    <div id="toast"></div>
+    
+    <!--Menu-->
+    <div class="menu">
+        <nav>
+            <h2 class="logo">Olá <span>Kaleb</span></h2>
+            <ul>
+                <li class="select-menu">
+                    <a href="#" class="filtro" onclick="filtrar(Status.Todo, this)">Tarefas não iniciadas</a>
+                    <span class="select-menu-icon">
+                        entrar
+                        <img src="images/sword-hover-menu.png" width="20" height="20" />
+                    </span>
+                </li>
+                <li class="select-menu">
+                    <a href="#" id="link-tarefas-em-andamento" class="filtro" onclick="filtrar(Status.Doing, this)">Tarefas em andamento</a>
+                    <span class="select-menu-icon">
+                        entrar
+                        <img src="images/sword-hover-menu.png" width="20" height="20" />
+                    </span>
+                </li>
+                <li class="select-menu">
+                    <a href="#" class="filtro" onclick="filtrar(Status.Done, this)">Finalizadas</a>
+                    <span class="select-menu-icon">
+                        entrar
+                        <img src="images/sword-hover-menu.png" width="20" height="20" />
+                    </span>
+                </li>
+                <li class="select-menu">
+                    <a href="#" class="filtro" onclick="filtrar(Status.Paused, this)">Pausadas</a>
+                    <span class="select-menu-icon">
+                        entrar
+                        <img src="images/sword-hover-menu.png" width="20" height="20" />
+                    </span>
+                </li>
+            </ul>
+            <button type="button" onclick="openCadastroPopup()" id="novaTarefa">Nova Tarefa</button>
+        </nav>
+    </div>
+
+    <!--Container para os cards de tarefas-->
+    <main class="cards" id="cards"></main>
+
+    <!-- Script para carregar e manipular os dados -->
+    <script src="data.js"></script>
+    <script src="scripts.js"></script>    
+
+    <!--Templates cards tarefas cadastradas -->
+    <template id="card-template">
+        <section class="card ${tipoCard}">           
+                <div class="icon">
+                    <img src="${srcTipoCardImage}">
+                </div>            
+                <h5>
+                    <a href="${linkReferencia}" target="${targetLink}">${titulo}</a>
+                </h5>
+                <div class="containerEtapaOuPaginaAtual"></div>                
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: ${percentualConcluido}%;" id="progress-bar">
+                    </div>
+                    <span id="progress-text" style="color: ${corPercentual};">${percentualConcluido}%</span>
+                </div>
+                <!-- <span>${descricaoDetalhada}</span> -->
+                <div class="card-footer">
+                    <button type="button" class="${buttonClass}" style="display: ${iniciarTarefaHabilitado};" onclick="iniciarTarefa(${id}, ${tipoTarefaId})"><i class="fa fa-play" aria-hidden="true" style="display: ${iniciarTarefaHabilitado};"></i></button>
+                    <button type="button" class="${buttonClass}" style="display: ${pauseTarefaHabilitado};"><i class="fa fa-pause" aria-hidden="true" style="text-align: center; display: ${pauseTarefaHabilitado};"></i></button>
+                    <button type="button" class="${buttonClass} btn-open-edit-popup" data-id="${id}"><i style="text-align: center; display: block;" class="fa fa-pencil"></i></button>                               
+                    <button type="button" class="${buttonClass}"><i style="text-align: center;display: block;" class="fa fa-check"></i></button>
+                    <button type="button" class="${buttonClass}"><i style="text-align: center;display: block;" class="fa fa-trash-o"></i></button>
+                    
+                </div>                      
+        </section>
+    </template>
+
+    <template id ="controle-etapa-template">
+        <div class="etapaControleAtual" style="color: ${colorDescricaoTarefa};">            
+            ${etapaAtualDescricao}                                    
+        </div>
+        <div class="etapaOuPaginaAtualAcao" style="display: ${displayControle};">
+            <button type="button" onclick="avancarRetrocederTarefa(${tarefaId}, ${numeroEtapa}, ${tipoTarefaId}, false)" ${desabilitavoltar} class="${disabledClassBtnAcaoVoltar}"><i class="fa fa-step-backward"></i></button>
+            <button type="button" onclick="avancarRetrocederTarefa(${tarefaId}, ${numeroEtapa}, ${tipoTarefaId}, true)" ${desabilitaavancar} class="${disabledClassBtnAcaoAvancar}"><i class="fa fa-step-forward"></i></button>
+        </div>
+    </template>
+
+    <template id="controle-pagina-videoaula">
+        <div class="paginaOuVideoControleAtual" style="color: ${colorDescricaoTarefa};">            
+            ${paginaOuVideoAtualDescricao}                                    
+        </div>
+        <div class="etapaOuPaginaAtualAcao" style="display: ${displayControle};">
+            <button type="button" onclick="avancarRetrocederTarefa(${tarefaId}, 0, ${tipoTarefaId}, false)" ${desabilitavoltar} class="${disabledClassBtnAcaoVoltar}"><i class="fa fa-step-backward"></i></button>
+            <button type="button" onclick="avancarRetrocederTarefa(${tarefaId}, 0, ${tipoTarefaId}, true)" ${desabilitaavancar} class="${disabledClassBtnAcaoAvancar}"><i class="fa fa-step-forward"></i></button>
+        </div>
+    </template>
+
+    <!--Templates preview etapa cadastrar -->
+    <template id="etapas-para-salvar-preview-template">
+        <div>
+            <span class="etapaParaSalvar">${numeroEtapa} : </span><span>${descricaoEtapa}<br></span>
+        </div>        
+    </template>
+
+    <!--Formulário cadastro nova tarefa-->
+    <div id="novaTarefaPopup" class="popup">
+        <div class="popup-content">
+            <div class="scrolling-container">
+                <h2>Cadastrar Nova Tarefa</h2>
+                <form id="novaTarefaForm">
+                    <label for="titulo">Título:</label>
+                    <input type="text" id="titulo" name="titulo" required><br>
+                    
+                    <label for="tiposDeTarefa">Título:</label>
+                    <select name="tiposDeTarefa" id="tiposDeTarefa" required>
+                        <option value="0">Escolha o tipo</option>
+                        <option value="1">Codar Games Antigos</option>
+                        <option value="2">Codar Meu Game</option>
+                        <option value="3">Estudar Livro</option>
+                        <option value="4">Estudar Vídeo Aula</option>
+                    </select><br>
+        
+                    <label for="descricaoDetalhada">Descrição Detalhada:</label>
+                    <textarea id="descricaoDetalhada" name="descricaoDetalhada" required></textarea><br>
+        
+                    <div id="etapasCadastroType" style="display: none;">
+                        <h3>Etapas Tarefa </h3>
+                        <button type="button" style="float: none;" id="novaEtapaBtn" onclick="openCadastroEtapaPopup()">Adicionar Etapas</button>
+                        <div id="etapasParaSalvarPreview">
+                        </div>
+                    </div>
+                    <div id="qtdAulasPaginasCadastroType" style="display: none;">
+                        <label for="qtdPaginasOuVideos">Quantidade de páginas ou vídeo aulas:</label>
+                        <input type="number" id="qtdPaginasOuVideos" />
+
+                        <label for="linkReferencia">Link do livro ou vídeo aulas/curso</label>
+                        <input type="text" id="linkReferencia" />
+                    </div>
+                    <button onclick="fecharFormNovaTarefa()">Fechar</button>
+                    <button class="btnSalvar" id="salvarTarefaBtn" type="button" onclick="saveNovaTarefa()">Salvar</button>
+                </form>
+                </div>
+        </div>
+    </div>
+
+    <!-- Popup para adicionar etapas -->
+    <div id="etapasPopup" class="">
+        <div class="">
+            <h3>Adicionar Etapas</h3>
+            <div id="etapasContainer">
+                <!-- Campos de etapa serão adicionados dinamicamente aqui -->
+                <div id="etapaFormContainer" class="etapa">
+                    <input id="numeroEtapa" type="hidden" />
+                    <label>Número da Etapa: <span id="numeroEtapaDisplay"></span></label>
+                    <span id="proximoNumeroEtapa"></span><br />
+                    <label style="padding-top: 10px;margin-top: 10px;">Descrição:</label>
+                    <input type="text" id="descricaoEtapa" name="descricaoEtapa" />
+                </div>
+            </div>
+            <button onclick="addEtapa()">Adicionar<i class="fa fa-plus-circle" style="margin-left: 6px;"></i></button>
+            <button onclick="fecharEtapasPopup()">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Popup de edição de tarefa -->
+    <!-- Popup de Edição de Tarefa -->
+    <div id="editPopup" class="popup">
+        <div class="popup-content">
+        <h2>Editar Tarefa</h2>
+        <form id="editForm">
+
+            <input type="hidden" id="tarefaId" />
+
+            <label for="editTitulo">Título:</label><br>
+            <input type="text" id="editTitulo" name="editTitulo" required><br>
+
+            <div class="infoTarefaGrupo">
+                <div class="grupoInfoTarefa">
+                    <label for="editDataInicio">Iniciada em</label><br>
+                    <span id="editDataInicio"></span>
+                </div>
+                <div class="grupoInfoTarefa">
+                    <label for="editTipoTarefa">Tipo da tarefa</label><br>
+                    <span id="editTipoTarefa"></span>
+                </div>                
+            </div>            
+            
+            <br />
+            <div id="containerDescricaoDetalhadaEdit">
+                <label for="editDescricaoDetalhada">Descrição Detalhada:</label><br>
+                <textarea id="editDescricaoDetalhada" rows="4" name="editDescricaoDetalhada" required></textarea><br>
+            </div>            
+
+            <div id="editQtdNumeroPaginasOuVideos" style="display: none;margin-bottom: 6px;">
+                <label for="qtdPaginasOuVideosEdit">Quantidade de Páginas ou Vídeos aulas:</label>
+                <input type="number" id="qtdPaginasOuVideosEdit" style="text-align: center; background-color: white; width:20%; height: 32px; text-align: center;float: none;"  name="qtdPaginasOuVideosEdit" />
+                <br /><br />
+                <label for="linkReferenciaEdit">Link do livro ou vídeo aulas/curso</label>
+                <input type="text" id="linkReferenciaEdit" />
+            </div>
+            
+            <div id="editEtapasTarefa" style="display: none;">
+                <h3>Etapas da Tarefa:</h3><br />
+                <button type="button" style="float: none;" id="novaEtapaBtn" onclick="openCadastroEtapaPopup()">Adicionar Etapas</button>
+                
+                <table id="edicaoTarefasTabela">
+                    <thead>
+                        <tr>
+                            <th>Ordem Etapa</th>
+                            <th>Status</th>
+                            <th>Descrição</th>
+                            <th>Mover</th>                               
+                        </tr>
+                    </thead>
+                    <tbody id="editEtapasContainer">
+                        <!-- Linhas de etapas serão adicionadas dinamicamente aqui -->
+                    </tbody>
+                </table>
+            </div>
+            <button onclick="fecharEditFormTarefa()">Fechar</button>
+            <button class="btnSalvar" type="button" onclick="saveTarefa()">Salvar</button>
+        </form>
+        </div>
+    </div>
+
+    <!--Loading-->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+</body>
+</html>

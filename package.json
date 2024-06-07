@@ -1,0 +1,23 @@
+{
+  "name": "gerenciamento-game-dev-web-node",
+  "version": "1.0.0",
+  "description": "Gerenciamento de tarefas de desenvolvimento de games",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mssql": "^10.0.2",
+    "sequelize": "^6.37.3",
+    "sequelize-msnodesqlv8": "^0.2.6-beta.8",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "tedious": "^18.1.0"
+  }
+}

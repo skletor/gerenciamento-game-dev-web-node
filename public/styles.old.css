@@ -1,0 +1,347 @@
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow:auto;
+}
+
+.popup-content {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    margin-right: 80px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    display: grid;
+    width: 80%;
+}
+
+.popup-content .scrolling-container {
+    overflow-y: auto;    
+    /*
+      could be flex here, but then
+      you have to set the direction
+      and the items may need flex 
+      setting adjustments
+    */
+    display: grid;
+    gap: .5rem;    
+  }
+
+/* Estilo para a popup de cadastro de etapas */
+#etapasPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    max-width: 500px; /* Definindo o tamanho máximo da popup */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1001; /* Garantindo que a popup fique acima da popup principal */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo para o conteúdo da popup */
+#etapasPopup .popup-content {
+    max-height: 80vh; /* Definindo a altura máxima do conteúdo */
+    overflow-y: auto; /* Adicionando rolagem vertical se necessário */
+}
+
+/* Estilo para botões na popup */
+#etapasPopup button {
+    margin-top: 5px;
+}
+
+/* Estilos adicionais */
+/* Estilo para a página index.html */
+
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 100%;
+    margin-left: 40px;
+    margin-right: 40px;
+    padding: 0 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.container button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.container button:hover {
+    background-color: #0056b3;
+}
+
+.btnSalvar{
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 06px;
+    float:right;
+}
+
+.btnSalvar:hover {
+    background-color: #0056b3;
+}
+
+table {
+     margin-top: 20px;
+     width: 100%;
+}
+
+th {
+    background-color: #f2f2f2;
+    text-align: center;
+    padding: 04px;
+    border: 1px solid #ddd;   
+}
+
+td {
+    /* border-spacing: 0!important; */
+    padding: 04px;
+    margin: 0px;     
+}
+
+/* Estilos responsivos */
+@media screen and (max-width: 600px) {
+    .container {
+        padding: 0 10px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    /* table {
+        font-size: 14px;
+    } */
+
+    table, thead, tbody, th, td, tr {
+        display: block;
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}
+
+/* FORMULÁRIO DE NOVA TAREFA */
+/* Estilo para o formulário de nova tarefa */
+
+/* Estilos gerais */
+#salvarTarefaBtn {
+    float: right;
+}
+
+#novaTarefaForm {
+    margin-top: 10px;
+}
+
+#novaTarefaForm label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.popup-content input[type="text"],
+.popup-content input[type="number"],
+.popup-content input[type="date"],
+.popup-content select,
+.popup-content textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#numeroPaginaOuVideoAtual {
+    width: 10%;
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#novaTarefaForm input[type="text"],
+#novaTarefaForm input[type="number"],
+#novaTarefaForm input[type="date"],
+#novaTarefaForm select,
+#novaTarefaForm textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#etapasParaSalvarPreview {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #048f45;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fdfdfd;
+    display: none;
+}
+
+.etapaParaSalvar{
+    padding-right: 4px;
+    font-weight: bold;
+}
+
+#numeroEtapaDisplay{
+    padding-right: 4px;
+    font-weight: bold;
+}
+
+#etapaFormContainer label {
+    
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+#etapaFormContainer input[type="text"],
+#etapaFormContainer input[type="number"],
+#etapaFormContainer input[type="date"],
+#etapaFormContainer select,
+#etapaFormContainer textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    margin-top: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#novaTarefaForm select {
+    width: calc(100% - 22px); /* Considerando a largura do seletor */
+}
+
+#novaTarefaForm textarea {
+    height: 100px;
+}
+
+#novaTarefaForm button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#novaTarefaForm button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos responsivos */
+@media screen and (max-width: 600px) {
+    #novaTarefaForm {
+        padding: 0 10px;
+    }
+
+    #novaTarefaForm input[type="text"],
+    #novaTarefaForm input[type="number"],
+    #novaTarefaForm input[type="date"],
+    #novaTarefaForm select,
+    #novaTarefaForm textarea {
+        padding: 6px;
+    }
+}
+
+.etapaPendente {
+    background-color: rgb(254, 14, 14);
+    color: rgb(255, 255, 255);    
+}
+
+.etapaFazendo {
+    background-color: #2024fc;
+}
+
+.etapaFeita {
+    background-color: #2cd10b;
+}
+
+.infoTarefaGrupo {
+    display: block;
+    margin-bottom: 60px;
+}
+
+.grupoInfoTarefa{
+    float: left;
+    padding: 6px;
+    margin-bottom: 8px;
+    margin-right: 30px;
+    display: inline;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
