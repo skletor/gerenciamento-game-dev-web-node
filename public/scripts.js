@@ -452,6 +452,8 @@ async function saveNovaTarefa() {
 
 async function saveTarefa() {
     
+    showLoading();
+
     const tarefaId = dataEtapasCadastro.idTarefa;
 
     const response = await fetch(`/api/tarefas/${tarefaId}`, {
@@ -478,6 +480,7 @@ async function saveTarefa() {
     // Fechar popup após salvar
     document.getElementById('editPopup').style.display = 'none';
 
+    hideLoading();
     // Atualizar lista de tarefas
     await loadTarefas();
 }
