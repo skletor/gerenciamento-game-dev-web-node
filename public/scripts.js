@@ -234,8 +234,8 @@ async function loadTarefas(status) {
         }, 1000
     )
 
-    document.getElementById('link-tarefas-a-fazer').classList.add('clicado');
-    document.getElementById('link-tarefas-em-andamento').classList.remove('clicado');
+    document.getElementById('link-tarefas-a-fazer').classList.remove('clicado');
+    document.getElementById('link-tarefas-em-andamento').classList.add('clicado');
     document.getElementById('link-tarefas-feitas').classList.remove('clicado');
     document.getElementById('link-tarefas-pausadas').classList.remove('clicado');
 }

@@ -961,13 +961,18 @@ td {
     }
 
     .menu nav ul {
-        flex-direction: column;
+        display: block; /* Transformar de volta em bloco */
+        list-style-type: disc; /* Restaurar os marcadores de lista */
+        padding-left: 20px; /* Restaurar o padding padrão do ul */
         width: 100%;
     }
 
     .menu nav ul li {
-        padding: 10px 0;
+        /* padding: 10px 0;
         text-align: center;
+        display: block; */
+        margin-right: 0; /* Remover o espaçamento entre os itens */
+        margin-bottom: 10px; /
     }
 
     .menu nav button {
@@ -992,8 +997,19 @@ td {
         font-size: 16px;
     }
 
+    .menu nav ul {
+        display: block; /* Transformar de volta em bloco */
+        list-style-type: disc; /* Restaurar os marcadores de lista */
+        padding-left: 20px; /* Restaurar o padding padrão do ul */
+        width: 100%;
+    }
+
     .menu nav ul li {
-        padding: 8px 0;
+        margin-right: 0; /* Remover o espaçamento entre os itens */
+        margin-bottom: 10px; /
+        /* flex-direction: row; */
+        /* display: inline-block;
+        padding: 10px 20px; */
     }
 
     .menu nav ul li a {
