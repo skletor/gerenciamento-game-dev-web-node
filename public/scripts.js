@@ -8,8 +8,8 @@ function AddCardsTemplate(cardItens, elementoContainerId) {
     cardItens.forEach(item => {
         let novoElemento = null;
         
-        item.iniciarTarefaHabilitado = item.status.enum == Status.Todo.enum ? "block" : "none";
-        item.pauseTarefaHabilitado = item.status.enum > Status.Todo.enum ? "block" : "none";
+        item.iniciarTarefaHabilitado = item?.status?.enum == Status.Todo.enum || item?.status?.enum == Status.Paused.enum ? "block" : "none";
+        item.pauseTarefaHabilitado = item?.status?.enum == Status.Doing.enum ? "block" : "none";
         item.tipoTarefaId = item?.tipoTarefa?.enum;
 
         if (item.percentualConcluido >= 50)
@@ -44,8 +44,14 @@ function AddCardsTemplate(cardItens, elementoContainerId) {
                 desabilitaavancar: item?.etapaAtiva?.numeroEtapa >= item.etapas?.length ? 'disabled' : "",
                 disabledClassBtnAcaoAvancar: item?.etapaAtiva?.numeroEtapa >= item.etapas?.length ? "disabledBtnAcao" : ""
             };
-
-            if (item.etapaAtiva === undefined) {
+            
+            if (item?.status?.enum == Status.Done.enum) {
+                controleEtapaData.etapaAtualDescricao = "Nice!! Tarefa Finalizada";
+                controleEtapaData.displayControle = "none";
+                controleEtapaData.colorDescricaoTarefa = "blue";
+                controleEtapaData.numeroEtapa = 0;
+            }
+            else if (item.etapaAtiva === undefined) {
                 controleEtapaData.etapaAtualDescricao = "Tarefa não iniciada, aperte o Play abaixo";
                 controleEtapaData.displayControle = "none";
                 controleEtapaData.colorDescricaoTarefa = "red";
@@ -184,11 +190,9 @@ ready(() => {
 });
 
 async function loadTarefas(status) {
-
-    console.log('status chegado do filtro ', status);
-
+    
     if (status == undefined || status == null)
-        status = Status.Doing.enum;
+        status = Status.Todo.enum;
 
     showLoading();
 
@@ -230,7 +234,10 @@ async function loadTarefas(status) {
         }, 1000
     )
 
-    document.getElementById('link-tarefas-em-andamento').classList.add('clicado');
+    document.getElementById('link-tarefas-a-fazer').classList.add('clicado');
+    document.getElementById('link-tarefas-em-andamento').classList.remove('clicado');
+    document.getElementById('link-tarefas-feitas').classList.remove('clicado');
+    document.getElementById('link-tarefas-pausadas').classList.remove('clicado');
 }
 
 async function avancarRetrocederTarefa(id, numeroEtapa, tipoTarefaId, isAvancar) {
@@ -258,8 +265,32 @@ async function avancarRetrocederTarefa(id, numeroEtapa, tipoTarefaId, isAvancar)
     mostrarToast(jsonResponse.message);
 
     // Atualizar lista de tarefas
-    loadTarefas();
+    loadTarefas(Status.Doing.enum);
     
+    hideLoading();
+}
+
+async function atualizarTarefa(status, tarefaId) {
+
+    showLoading();
+
+    const response = await fetch(`/api/tarefas/update/${tarefaId}`, {
+        method: 'PUT',
+        body: JSON.stringify(
+            { 
+                status: status
+            }
+        ),
+        headers: {"Content-type": "application/json"}
+    });
+
+    const jsonResponse = await response.json();
+    mostrarToast(jsonResponse.message);
+
+    // Atualizar lista de tarefas
+    loadTarefas();
+
+
     hideLoading();
 }
 
@@ -297,7 +328,9 @@ function hideLoading() {
 }
 
 function openCadastroPopup() {    
+    dataEtapasCadastro.numeroEtapa = 1;
     document.querySelector('.popup').style.display = 'block';
+    document.getElementById('novaTarefaForm').reset();
 }
 
 function openCadastroEtapaPopup() {
@@ -531,14 +564,15 @@ function novaTarefaDadosValidos() {
 // Função para abrir popup de edição com as etapas da tarefa
 async function openEditPopup(tarefaId) {
 
+    document.getElementById('editForm').reset();
+
     const response = await fetch(`/api/tarefas/${tarefaId}`);
     const tarefa = await response.json();
     dataEtapasCadastro.etapas = tarefa.etapas;
     dataEtapasCadastro.idTarefa = tarefa.id;
     dataEtapasCadastro.tipoTarefa = tarefa?.tipoTarefa;
     dataEtapasCadastro.numeroEtapa = tarefa?.etapas[tarefa?.etapas?.length - 1]?.numeroEtapa + 1;
-    
-    console.log('qtdPaginasOuVideos', tarefa?.qtdPaginasOuVideos);
+        
     // Preencher os inputs com os valores atuais da tarefa
     document.getElementById('tarefaId').value = tarefa?.id;
     document.getElementById('editTitulo').value = tarefa?.titulo;

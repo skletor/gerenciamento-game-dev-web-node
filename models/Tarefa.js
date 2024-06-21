@@ -22,7 +22,9 @@ class Tarefa {
       case Status.Doing.enum:
         return Status.Doing;       
       case Status.Done.enum:
-        return Status.Done;        
+        return Status.Done;  
+      case Status.Paused.enum:
+        return Status.Paused;
     } 
   }
   getTipoTarefa(tipoTarefa) {

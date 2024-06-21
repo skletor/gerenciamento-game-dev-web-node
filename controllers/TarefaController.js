@@ -251,4 +251,49 @@ router.put('/api/tarefas/atualizar-progresso/:id', async (req, res) => {
   }
 });
 
+router.put('/api/tarefas/update/:id', async (req, res) => {
+
+  try {    
+
+    switch (req.body.status) {
+      case Status.Paused.enum:
+        tarefaRepository.pausarTarefa(req.params.id,
+          (err) => {
+            if (err) throw err;
+            else
+              res.status(200).json({ message: 'tarefa pausada com sucesso' });
+          });
+        break;
+      case Status.Doing.enum:
+        tarefaRepository.retomarTarefa(req.params.id,
+          (err) => {
+            if (err) throw err;
+            else
+              res.status(200).json({ message: 'tarefa retomada com sucesso' });
+          });
+        break;
+      case Status.Done.enum:
+        tarefaRepository.finalizarTarefa(req.params.id,
+          (err) => {
+            if (err) throw err;
+            else
+              res.status(200).json({ message: 'tarefa finalizada com sucesso' });
+          });
+        break;
+      default:
+        tarefaRepository.deletarTarefa(req.params.id,
+          (err) => {
+            if (err) throw err;
+            else
+              res.status(200).json({ message: 'tarefa excluída com sucesso' });
+          });
+        break;
+    }
+  }
+  catch (err) {
+    console.error(err.message);
+    res.status(500).send('Erro no servidor');
+  }
+});
+
 module.exports = router;

@@ -77,6 +77,33 @@ function atualizarPercentualProgressoTarefa(tarefaId, percentuaConcluido, callBa
     );
 }
 
+function pausarTarefa(tarefaId, callBack) {
+    db.run(`UPDATE Tarefa SET Status = ? WHERE Id = ?`, [Status.Paused.enum, tarefaId],
+        function (err) {
+            callBack(err);
+        });
+}
+
+function retomarTarefa(tarefaId, callBack) {
+    db.run(`UPDATE Tarefa SET Status = ? WHERE Id = ?`, [Status.Doing.enum, tarefaId],
+        function (err) {
+            callBack(err);
+        });
+}
+
+function finalizarTarefa(tarefaId, callBack) {
+    db.run(`UPDATE EtapaTarefa SET Status = ? WHERE TarefaId = ?`, [Status.Done.enum, tarefaId]);
+    db.run(`UPDATE Tarefa SET Status = ?, PercentualConcluido = 100 WHERE Id = ?`, [Status.Done.enum, tarefaId],
+        function (err) {
+            callBack(err);
+        });
+}
+
+function deletarTarefa(tarefaId, callBack) {
+    db.run(`DELETE FROM EtapaTarefa WHERE TarefaId = ?`, [tarefaId]);
+    db.run(`DELETE FROM Tarefa WHERE Id = ?`, [tarefaId], callBack);    
+}
+
 module.exports = {
     getTarefas: getTarefas,
     saveTarefa: saveTarefa,
@@ -84,5 +111,9 @@ module.exports = {
     saveTarefaEditada: saveTarefaEditada,
     iniciarTarefa: iniciarTarefa,
     atualizarProgressoTarefa: atualizarProgressoTarefa,
-    atualizarPercentualProgressoTarefa : atualizarPercentualProgressoTarefa
+    atualizarPercentualProgressoTarefa: atualizarPercentualProgressoTarefa,
+    pausarTarefa: pausarTarefa,
+    retomarTarefa: retomarTarefa,
+    finalizarTarefa: finalizarTarefa,
+    deletarTarefa: deletarTarefa
 }
