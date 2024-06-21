@@ -212,8 +212,7 @@ router.put('/api/tarefas/atualizar-progresso/:id', async (req, res) => {
   try {
     
     tarefaRepository.getTarefaPorId(req.params.id, (err, data) => {
-
-      console.log('data', data);
+      
       const tarefa = data;
 
       if (data.TipoTarefa < TipoTarefa.EstudarLivro.enum) {
