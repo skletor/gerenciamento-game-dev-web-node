@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalR View</title>
+</head>
+<body>
+    <h1>Notificações portal SignalR</h1>
+
+    <br /><br /><br /><br />
+
+    <div id="hub-messages" style="background-color: rgb(1, 31, 7); min-height: 200px;border-radius: 4px;border: 1px solid #629f81; ">
+
+        <div id="server-message" style="color: rgb(255, 255, 255);font-weight: bold;font-family: Calibri;">
+            Mensagem do servidor SignalR: <br /><br /><br />
+            <span id="message-content" style="color: #027d40;"></span>
+        </div>
+        
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.18/signalr.min.js"></script>
+    <script>
+        var hubConnection = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Trace)
+            .withUrl("https://gpark-sc.hidra.taggy.com.br/bff/notificationhub",
+            //.withUrl("http://localhost:5111/notificationhub", 
+            { 
+                withCredentials: true // Garante que credenciais sejam enviadas)
+            })
+            .build();
+
+        document.getElementById('message-content').textContent = 'Conectando ao Hub SignalR do portal';
+
+        hubConnection.start()
+            .then(() => {
+                //document.write("Conectando ao Hub SignalR do portal")
+                document.getElementById('message-content').textContent = 'Conectado ao Hub SignalR';
+                console.log('Conectado ao Hub SignalR');
+            })
+            .catch(err => {
+                console.error('erro connect signalR: ',err);
+                document.getElementById('message-content').textContent = 'Erro ao se conectar ao Hub SignalR do portal, ERRO:' + err;
+            });
+
+         // Manipulador para escutar a mensagem "ReceiveMessage"
+         hubConnection.on("ReceiveMessage", (message) => {
+            console.log('Mensagem recebida do servidor:', message);
+            // Atualiza o conteúdo da página com a mensagem recebida
+            document.getElementById('message-content').textContent = 'Mensagem recebida: ' + JSON.stringify(message);
+        });
+    </script>
+</body>
+</html>
